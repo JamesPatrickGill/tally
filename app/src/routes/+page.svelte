@@ -88,6 +88,8 @@
     notes: '',
   });
 
+  let confirmingDelete = $state(false);
+
   // Derived values
   const assetAccounts = $derived(accounts.filter((a) => a.category === 'asset'));
   const liabilityAccounts = $derived(accounts.filter((a) => a.category === 'liability'));
@@ -163,11 +165,11 @@
   }
 
   async function handleDeleteAccount(id: string) {
-    if (!confirm('Are you sure you want to delete this account?')) return;
     try {
       await deleteAccount(id);
       await loadAccounts();
     } catch (e) {
+      console.error('Delete failed:', e);
       error = e instanceof Error ? e.message : 'Failed to delete account';
     }
   }
@@ -561,49 +563,71 @@
 <!-- Add Balance Modal -->
 {#if showAddBalance}
   <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-  <div class="modal-backdrop" onclick={() => (showAddBalance = false)}>
+  <div class="modal-backdrop" onclick={() => { showAddBalance = false; confirmingDelete = false; }}>
     <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
     <div class="modal" onclick={(e) => e.stopPropagation()}>
-      <div class="modal-header">
-        <h2 class="modal-title">Update Balance</h2>
-        <button class="btn btn-ghost" aria-label="Close" onclick={() => (showAddBalance = false)}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <form onsubmit={(e) => { e.preventDefault(); handleAddBalance(); }}>
-        <div class="form-group">
-          <label for="balance">Balance</label>
-          <input id="balance" type="number" step="0.01" bind:value={newBalance.balance} placeholder="0.00" required />
+      {#if confirmingDelete}
+        <div class="modal-header">
+          <h2 class="modal-title">Delete Account?</h2>
         </div>
-
-        <div class="form-group">
-          <label for="date">Date</label>
-          <input id="date" type="date" bind:value={newBalance.date} required />
-        </div>
-
-        <div class="form-group">
-          <label for="notes">Notes (optional)</label>
-          <input id="notes" type="text" bind:value={newBalance.notes} placeholder="e.g., After monthly deposit" />
-        </div>
-
+        <p class="text-content-secondary text-sm mb-6">
+          This will permanently delete this account and all its balance history. This action cannot be undone.
+        </p>
         <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick={() => (confirmingDelete = false)}>Cancel</button>
           <button
             type="button"
             class="btn btn-danger"
-            onclick={() => {
-              if (selectedAccountId) handleDeleteAccount(selectedAccountId);
+            onclick={async () => {
+              if (selectedAccountId) {
+                await handleDeleteAccount(selectedAccountId);
+              }
               showAddBalance = false;
+              confirmingDelete = false;
             }}
           >
             Delete Account
           </button>
-          <button type="button" class="btn btn-secondary" onclick={() => (showAddBalance = false)}>Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Balance</button>
         </div>
-      </form>
+      {:else}
+        <div class="modal-header">
+          <h2 class="modal-title">Update Balance</h2>
+          <button class="btn btn-ghost" aria-label="Close" onclick={() => (showAddBalance = false)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form onsubmit={(e) => { e.preventDefault(); handleAddBalance(); }}>
+          <div class="form-group">
+            <label for="balance">Balance</label>
+            <input id="balance" type="number" step="0.01" bind:value={newBalance.balance} placeholder="0.00" required />
+          </div>
+
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input id="date" type="date" bind:value={newBalance.date} required />
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Notes (optional)</label>
+            <input id="notes" type="text" bind:value={newBalance.notes} placeholder="e.g., After monthly deposit" />
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick={() => (confirmingDelete = true)}
+            >
+              Delete Account
+            </button>
+            <button type="button" class="btn btn-secondary" onclick={() => (showAddBalance = false)}>Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Balance</button>
+          </div>
+        </form>
+      {/if}
     </div>
   </div>
 {/if}

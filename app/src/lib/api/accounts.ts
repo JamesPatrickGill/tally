@@ -116,6 +116,8 @@ export async function updateAccount(id: string, input: UpdateAccountInput): Prom
 
 export async function deleteAccount(id: string): Promise<void> {
   const db = await getDb();
+  // Delete balance entries first (SQLite foreign keys not enabled by default)
+  await db.execute('DELETE FROM balance_entries WHERE account_id = ?', [id]);
   await db.execute('DELETE FROM accounts WHERE id = ?', [id]);
 }
 

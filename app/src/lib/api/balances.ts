@@ -88,46 +88,75 @@ export async function getChartData(
 ): Promise<ChartDataPoint[]> {
   const db = await getDb();
 
-  // Get all balances with account category info
+  // Get all balances with account info, ordered by account and date
   const rows = await db.select<Array<{
+    account_id: string;
     date: string;
     balance: number;
     category: string;
   }>>(
-    `SELECT be.date, be.balance, a.category
+    `SELECT be.account_id, be.date, be.balance, a.category
      FROM balance_entries be
      JOIN accounts a ON be.account_id = a.id
-     WHERE be.date >= ? AND be.date <= ?
-     ORDER BY be.date`,
-    [fromDate, toDate]
+     WHERE a.is_active = 1
+     ORDER BY be.account_id, be.date`,
+    []
   );
 
-  // Group by date and sum assets/liabilities
-  const dateMap = new Map<string, { assets: number; liabilities: number }>();
+  // Get unique dates within range
+  const allDates = [...new Set(rows.map(r => r.date))]
+    .filter(d => d >= fromDate && d <= toDate)
+    .sort();
 
+  if (allDates.length === 0) return [];
+
+  // Build a map of account_id -> sorted balance entries
+  const accountBalances = new Map<string, Array<{ date: string; balance: number; category: string }>>();
   for (const row of rows) {
-    const entry = dateMap.get(row.date) || { assets: 0, liabilities: 0 };
-    if (row.category === 'asset') {
-      entry.assets += row.balance;
-    } else {
-      entry.liabilities += Math.abs(row.balance);
+    if (!accountBalances.has(row.account_id)) {
+      accountBalances.set(row.account_id, []);
     }
-    dateMap.set(row.date, entry);
-  }
-
-  // Convert to array and calculate net worth
-  const result: ChartDataPoint[] = [];
-  for (const [date, values] of dateMap) {
-    result.push({
-      date,
-      assets: values.assets,
-      liabilities: values.liabilities,
-      netWorth: values.assets - values.liabilities,
+    accountBalances.get(row.account_id)!.push({
+      date: row.date,
+      balance: row.balance,
+      category: row.category,
     });
   }
 
-  // Sort by date
-  result.sort((a, b) => a.date.localeCompare(b.date));
+  // For each date, calculate totals using the most recent balance for each account
+  const result: ChartDataPoint[] = [];
+
+  for (const date of allDates) {
+    let assets = 0;
+    let liabilities = 0;
+
+    for (const [, entries] of accountBalances) {
+      // Find the most recent entry on or before this date
+      let latestEntry: { balance: number; category: string } | null = null;
+      for (const entry of entries) {
+        if (entry.date <= date) {
+          latestEntry = entry;
+        } else {
+          break;
+        }
+      }
+
+      if (latestEntry) {
+        if (latestEntry.category === 'asset') {
+          assets += latestEntry.balance;
+        } else {
+          liabilities += Math.abs(latestEntry.balance);
+        }
+      }
+    }
+
+    result.push({
+      date,
+      assets,
+      liabilities,
+      netWorth: assets - liabilities,
+    });
+  }
 
   return result;
 }
