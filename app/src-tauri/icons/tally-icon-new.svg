@@ -1,0 +1,57 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="greenFill" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:0"/>
+      <stop offset="100%" style="stop-color:#22c55e;stop-opacity:0.35"/>
+    </linearGradient>
+    <linearGradient id="blueFill" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0"/>
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.2"/>
+    </linearGradient>
+    <linearGradient id="orangeFill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:0"/>
+      <stop offset="100%" style="stop-color:#f97316;stop-opacity:0.2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- App background color -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="#1c1c21"/>
+
+  <!-- Subtle grid lines -->
+  <g opacity="0.06" stroke="#fff" stroke-width="1">
+    <line x1="80" y1="150" x2="432" y2="150"/>
+    <line x1="80" y1="220" x2="432" y2="220"/>
+    <line x1="80" y1="290" x2="432" y2="290"/>
+    <line x1="80" y1="360" x2="432" y2="360"/>
+  </g>
+
+  <!-- Blue area fill (assets) -->
+  <path d="M80 290 L80 200 Q180 170 256 145 Q340 115 432 105 L432 290 Z" fill="url(#blueFill)"/>
+
+  <!-- Green area fill (net worth) -->
+  <path d="M80 290 L80 280 Q180 245 256 210 Q340 170 432 155 L432 290 Z" fill="url(#greenFill)"/>
+
+  <!-- Orange area fill (liabilities) -->
+  <path d="M80 290 L80 320 Q180 350 256 370 Q340 390 432 400 L432 290 Z" fill="url(#orangeFill)"/>
+
+  <!-- Blue line (assets) - smooth curve -->
+  <path d="M80 200 Q180 170 256 145 Q340 115 432 105"
+        stroke="#3b82f6"
+        stroke-width="11"
+        stroke-linecap="round"
+        fill="none"/>
+
+  <!-- Green line (net worth) - smooth curve -->
+  <path d="M80 280 Q180 245 256 210 Q340 170 432 155"
+        stroke="#22c55e"
+        stroke-width="14"
+        stroke-linecap="round"
+        fill="none"/>
+
+  <!-- Orange line (liabilities) - smooth curve -->
+  <path d="M80 320 Q180 350 256 370 Q340 390 432 400"
+        stroke="#f97316"
+        stroke-width="11"
+        stroke-linecap="round"
+        fill="none"/>
+</svg>
