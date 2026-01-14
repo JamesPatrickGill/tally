@@ -3,21 +3,26 @@ mod models;
 
 pub use models::*;
 
+#[cfg(debug_assertions)]
+const DB_PATH: &str = concat!("sqlite:", env!("CARGO_MANIFEST_DIR"), "/../dev-data/tally.db");
+#[cfg(not(debug_assertions))]
+const DB_PATH: &str = "sqlite:tally.db";
+
+#[tauri::command]
+fn get_db_path() -> &'static str {
+    DB_PATH
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    // Use local dev-data directory in debug mode, app data directory in release
-    #[cfg(debug_assertions)]
-    let db_path = "sqlite:./dev-data/tally.db";
-    #[cfg(not(debug_assertions))]
-    let db_path = "sqlite:tally.db";
-
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_sql::Builder::default()
-                .add_migrations(db_path, db::get_migrations())
+                .add_migrations(DB_PATH, db::get_migrations())
                 .build(),
         )
+        .invoke_handler(tauri::generate_handler![get_db_path])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
