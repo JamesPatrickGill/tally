@@ -1,7 +1,33 @@
-# Tauri + SvelteKit + TypeScript
+# Tally Development
 
-This template should help get you started developing with Tauri, SvelteKit and TypeScript in Vite.
+## Prerequisites
 
-## Recommended IDE Setup
+- [Node.js](https://nodejs.org/) (v18+)
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Tauri prerequisites](https://tauri.app/start/prerequisites/)
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+## Setup
+
+```bash
+npm install
+```
+
+## Development
+
+```bash
+npm run tauri dev
+```
+
+## Build
+
+```bash
+npm run tauri build
+```
+
+Output: `src-tauri/target/release/bundle/`
+
+## Tech Stack
+
+- **Frontend**: SvelteKit, Svelte 5, TypeScript, Tailwind CSS
+- **Backend**: Tauri 2, Rust
+- **Database**: SQLite
