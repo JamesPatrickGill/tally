@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+@theme {
+  /* Background Layers */
+  --color-bg-primary: #1c1c21;
+  --color-bg-secondary: #16161a;
+  --color-bg-tertiary: #232328;
+  --color-bg-elevated: #2a2a30;
+  --color-bg-modal: rgba(10, 10, 12, 0.93);
+
+  /* Text Hierarchy */
+  --color-content-primary: #e4e4e7;
+  --color-content-secondary: #a1a1aa;
+  --color-content-tertiary: #71717a;
+  --color-content-inverse: #18181b;
+
+  /* Accent Colors */
+  --color-accent-green: #16a34a;
+  --color-accent-green-light: #22c55e;
+  --color-accent-green-dark: #15803d;
+  --color-accent-blue: #3b82f6;
+  --color-accent-amber: #eab308;
+  --color-accent-red: #ef4444;
+  --color-accent-orange: #f97316;
+  --color-accent-purple: #8b5cf6;
+
+  /* Account Type Colors */
+  --color-account-property: #3b82f6;
+  --color-account-pension: #8b5cf6;
+  --color-account-investment: #16a34a;
+  --color-account-savings: #eab308;
+  --color-account-mortgage: #f97316;
+  --color-account-loan: #fb923c;
+  --color-account-credit-card: #fb923c;
+
+  /* Borders */
+  --color-line-subtle: rgba(255, 255, 255, 0.06);
+  --color-line: rgba(255, 255, 255, 0.1);
+  --color-line-strong: rgba(255, 255, 255, 0.15);
+  --color-line-focus: #16a34a;
+
+  /* Fonts */
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-mono: 'IBM Plex Mono', monospace;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+}
+
+@layer base {
+  * {
+    @apply box-border m-0 p-0;
+  }
+
+  body {
+    @apply bg-bg-primary text-content-primary min-h-screen overflow-x-hidden
+           text-sm leading-normal antialiased font-sans;
+  }
+
+  button {
+    @apply font-sans cursor-pointer border-none bg-transparent text-inherit;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply font-sans text-[13px] bg-bg-tertiary border border-line text-content-primary
+           w-full rounded px-3 py-2.5 transition-colors duration-150
+           focus:outline-none focus:border-line-focus;
+  }
+
+  input::placeholder {
+    @apply text-content-tertiary;
+  }
+
+  select {
+    @apply appearance-none pr-9;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+
+  label {
+    @apply block text-[11px] font-medium text-content-tertiary uppercase tracking-wider mb-1.5;
+  }
+}
+
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5
+           px-4 py-2 text-[13px] font-medium rounded
+           transition-all duration-150;
+  }
+
+  .btn-primary {
+    @apply bg-accent-green text-white hover:bg-accent-green-light;
+  }
+
+  .btn-secondary {
+    @apply bg-bg-tertiary border border-line hover:bg-bg-elevated;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent hover:bg-white/[0.02];
+  }
+
+  .btn-danger {
+    @apply bg-accent-red text-white hover:opacity-90;
+  }
+
+  /* Form */
+  .form-group {
+    @apply mb-4;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-bg-secondary border border-line-subtle rounded-lg p-6;
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-bg-modal flex items-center justify-center z-[100];
+  }
+
+  .modal {
+    @apply bg-bg-secondary border border-line rounded-xl p-6
+           min-w-[400px] max-w-[500px] max-h-[90vh] overflow-y-auto;
+  }
+
+  .modal-header {
+    @apply flex items-center justify-between mb-6;
+  }
+
+  .modal-title {
+    @apply text-base font-semibold;
+  }
+
+  .modal-actions {
+    @apply flex gap-2 justify-end mt-6;
+  }
+}
+
+@layer utilities {
+  .positive {
+    @apply text-accent-green-light;
+  }
+
+  .negative {
+    @apply text-accent-red;
+  }
+}

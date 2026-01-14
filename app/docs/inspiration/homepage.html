@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tally</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Background Layers */
+      --bg-primary: #1c1c21;
+      --bg-secondary: #16161a;
+      --bg-tertiary: #232328;
+      --bg-elevated: #2a2a30;
+      --bg-modal: #0a0a0cee;
+
+      /* Text Hierarchy */
+      --text-primary: #e4e4e7;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-inverse: #18181b;
+
+      /* Accent Colors */
+      --accent-green: #16a34a;
+      --accent-green-light: #22c55e;
+      --accent-green-dark: #15803d;
+      --accent-blue: #3b82f6;
+      --accent-amber: #eab308;
+      --accent-red: #ef4444;
+
+      /* Borders */
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-default: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.15);
+      --border-focus: #16a34a;
+
+      /* Status */
+      --status-success: #22c55e;
+      --status-warning: #eab308;
+      --status-error: #ef4444;
+      --status-info: #3b82f6;
+      --status-neutral: #71717a;
+
+      /* Interactive */
+      --interactive-hover: rgba(255, 255, 255, 0.02);
+      --interactive-active: rgba(255, 255, 255, 0.04);
+      --interactive-selected: rgba(22, 163, 74, 0.08);
+
+      /* Semantic mappings */
+      --positive: var(--status-success);
+      --negative: var(--accent-red);
+      --asset-color: var(--accent-blue);
+      --liability-color: #f97316;
+      --networth-color: var(--accent-green);
+
+      /* Category colors */
+      --property: var(--accent-blue);
+      --pension: #8b5cf6;
+      --investment: var(--accent-green);
+      --savings: var(--accent-amber);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout: Sidebar + Main */
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-subtle);
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px 24px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-icon {
+      width: 26px;
+      height: 26px;
+      background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon svg {
+      width: 14px;
+      height: 14px;
+      color: white;
+    }
+
+    /* Net Worth in Sidebar */
+    .sidebar-networth {
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 16px;
+    }
+
+    .nw-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .nw-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .nw-change {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .nw-change-value {
+      color: var(--positive);
+      font-weight: 500;
+    }
+
+    .nw-change-period {
+      color: var(--text-tertiary);
+    }
+
+    /* Quick Stats */
+    .quick-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .quick-stat {
+      padding: 12px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .quick-stat-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .quick-stat-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .quick-stat-value.positive { color: var(--positive); }
+    .quick-stat-value.assets { color: var(--asset-color); }
+    .quick-stat-value.liabilities { color: var(--liability-color); }
+
+    /* Holdings List */
+    .holdings-section {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
+    }
+
+    .holdings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      margin-bottom: 8px;
+    }
+
+    .holdings-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .holdings-total {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .holding-row {
+      display: grid;
+      grid-template-columns: 8px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .holding-row:hover {
+      background: var(--interactive-hover);
+    }
+
+    .holding-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+    }
+
+    .holding-indicator.property { background: var(--property); }
+    .holding-indicator.pension { background: var(--pension); }
+    .holding-indicator.investment { background: var(--investment); }
+    .holding-indicator.savings { background: var(--savings); }
+    .holding-indicator.mortgage { background: var(--liability-color); }
+    .holding-indicator.loan { background: #fb923c; }
+
+    .holding-details {
+      min-width: 0;
+    }
+
+    .holding-name {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .holding-meta {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .holding-values {
+      text-align: right;
+    }
+
+    .holding-amount {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .holding-amount.negative {
+      color: var(--liability-color);
+    }
+
+    .holding-change {
+      font-size: 11px;
+      color: var(--positive);
+    }
+
+    .holding-change.negative {
+      color: var(--text-secondary);
+    }
+
+    .holdings-divider {
+      height: 1px;
+      background: var(--border-subtle);
+      margin: 12px 8px;
+    }
+
+    /* Main Content */
+    .main {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Bar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .time-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .time-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .time-btn:hover {
+      color: var(--text-secondary);
+      background: var(--interactive-hover);
+    }
+
+    .time-btn.active {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .chart-options {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+    }
+
+    .toggle-btn {
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .toggle-btn:hover {
+      color: var(--text-secondary);
+    }
+
+    .toggle-btn.active {
+      color: var(--text-primary);
+      background: var(--bg-elevated);
+    }
+
+    /* Chart Area */
+    .chart-area {
+      flex: 1;
+      position: relative;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-wrapper {
+      flex: 1;
+      position: relative;
+      min-height: 300px;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Chart Y-axis labels */
+    .y-axis {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 40px;
+      width: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 0;
+    }
+
+    .y-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--text-tertiary);
+      text-align: right;
+      padding-right: 12px;
+    }
+
+    .y-label.zero {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Chart X-axis labels */
+    .x-axis {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 70px 0 80px;
+    }
+
+    .x-label {
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+
+    /* Hover tooltip */
+    .chart-tooltip {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      backdrop-filter: blur(12px);
+      min-width: 200px;
+    }
+
+    .tooltip-date {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+    }
+
+    .tooltip-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .tooltip-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .tooltip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .tooltip-dot.assets { background: var(--asset-color); }
+    .tooltip-dot.liabilities { background: var(--liability-color); }
+    .tooltip-dot.networth { background: var(--networth-color); }
+
+    .tooltip-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .tooltip-value.negative {
+      color: var(--liability-color);
+    }
+
+    .tooltip-divider {
+      height: 1px;
+      background: var(--border-subtle);
+      margin: 8px 0;
+    }
+
+    .tooltip-net {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Grid lines */
+    .grid-line {
+      stroke: var(--border-subtle);
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+    }
+
+    .zero-line {
+      stroke: var(--border-strong);
+      stroke-width: 1.5;
+    }
+
+    /* Chart paths */
+    .chart-path {
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .chart-path.assets {
+      stroke: var(--asset-color);
+    }
+
+    .chart-path.liabilities {
+      stroke: var(--liability-color);
+    }
+
+    .chart-path.networth {
+      stroke: var(--networth-color);
+      stroke-width: 2.5;
+    }
+
+    .chart-fill {
+      opacity: 0.08;
+    }
+
+    .chart-fill.assets {
+      fill: var(--asset-color);
+    }
+
+    .chart-fill.liabilities {
+      fill: var(--liability-color);
+    }
+
+    .chart-fill.networth {
+      fill: var(--networth-color);
+      opacity: 0.12;
+    }
+
+    /* Hover line */
+    .hover-line {
+      stroke: var(--border-default);
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+    }
+
+    /* Milestones */
+    .milestone {
+      cursor: pointer;
+    }
+
+    .milestone-dot {
+      fill: var(--bg-primary);
+      stroke: var(--networth-color);
+      stroke-width: 2;
+      transition: all 0.15s ease;
+    }
+
+    .milestone:hover .milestone-dot {
+      fill: var(--networth-color);
+    }
+
+    .milestone-label {
+      font-size: 9px;
+      fill: var(--text-tertiary);
+      text-anchor: middle;
+    }
+
+    /* Bottom stats */
+    .bottom-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 20px;
+    }
+
+    .bottom-stat {
+      text-align: center;
+      padding: 16px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .bottom-stat-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .bottom-stat-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .bottom-stat-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    .bottom-stat-sub span {
+      color: var(--positive);
+    }
+
+    /* Legend */
+    .chart-legend {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .legend-line {
+      width: 16px;
+      height: 2px;
+      border-radius: 1px;
+    }
+
+    .legend-line.assets { background: var(--asset-color); }
+    .legend-line.liabilities { background: var(--liability-color); }
+    .legend-line.networth { background: var(--networth-color); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <span>Tally</span>
+      </div>
+
+      <div class="sidebar-networth">
+        <div class="nw-label">Net Worth</div>
+        <div class="nw-value">£284,392</div>
+        <div class="nw-change">
+          <span class="nw-change-value">+£22,620 (+8.6%)</span>
+          <span class="nw-change-period">YTD</span>
+        </div>
+      </div>
+
+      <div class="quick-stats">
+        <div class="quick-stat">
+          <div class="quick-stat-label">Assets</div>
+          <div class="quick-stat-value assets">£487,240</div>
+        </div>
+        <div class="quick-stat">
+          <div class="quick-stat-label">Liabilities</div>
+          <div class="quick-stat-value liabilities">£202,848</div>
+        </div>
+        <div class="quick-stat">
+          <div class="quick-stat-label">This Year</div>
+          <div class="quick-stat-value positive">+£22.6k</div>
+        </div>
+        <div class="quick-stat">
+          <div class="quick-stat-label">Monthly Avg</div>
+          <div class="quick-stat-value positive">+£1,885</div>
+        </div>
+      </div>
+
+      <div class="holdings-section">
+        <div class="holdings-header">
+          <span class="holdings-title">Assets</span>
+          <span class="holdings-total">£487,240</span>
+        </div>
+
+        <div class="holding-row">
+          <div class="holding-indicator property"></div>
+          <div class="holding-details">
+            <div class="holding-name">Primary Residence</div>
+            <div class="holding-meta">Property · Manchester</div>
+          </div>
+          <div class="holding-values">
+            <div class="holding-amount">£425,000</div>
+            <div class="holding-change">+£15,000</div>
+          </div>
+        </div>
+
+        <div class="holding-row">
+          <div class="holding-indicator pension"></div>
+          <div class="holding-details">
+            <div class="holding-name">Workplace Pension</div>
+            <div class="holding-meta">Aviva · DC Scheme</div>
+          </div>
+          <div class="holding-values">
+            <div class="holding-amount">£68,400</div>
+            <div class="holding-change">+£8,240</div>
+          </div>
+        </div>
+
+        <div class="holding-row">
+          <div class="holding-indicator pension"></div>
+          <div class="holding-details">
+            <div class="holding-name">SIPP</div>
+            <div class="holding-meta">AJ Bell · Mixed</div>
+          </div>
+          <div class="holding-values">
+            <div class="holding-amount">£24,200</div>
+            <div class="holding-change">+£2,100</div>
+          </div>
+        </div>
+
+        <div class="holding-row">
+          <div class="holding-indicator investment"></div>
+          <div class="holding-details">
+            <div class="holding-name">Stocks & Shares ISA</div>
+            <div class="holding-meta">Vanguard · Global All Cap</div>
+          </div>
+          <div class="holding-values">
+            <div class="holding-amount">£28,450</div>
+            <div class="holding-change">+£3,120</div>
+          </div>
+        </div>
+
+        <div class="holding-row">
+          <div class="holding-indicator investment"></div>
+          <div class="holding-details">
+            <div class="holding-name">GIA</div>
+            <div class="holding-meta">Trading 212 · Mixed</div>
+          </div>
+          <div class="holding-values">
+            <div class="holding-amount">£12,800</div>
+            <div class="holding-change">+£1,840</div>
+          </div>
+        </div>
+
+        <div class="holding-row">
+          <div class="holding-indicator savings"></div>
+          <div class="holding-details">
+            <div class="holding-name">Emergency Fund</div>
+            <div class="holding-meta">Marcus · 4.5% AER</div>
+          </div>
+          <div class="holding-values">
+            <div class="holding-amount">£15,200</div>
+            <div class="holding-change">+£680</div>
+          </div>
+        </div>
+
+        <div class="holding-row">
+          <div class="holding-indicator savings"></div>
+          <div class="holding-details">
+            <div class="holding-name">Cash ISA</div>
+            <div class="holding-meta">Chip · 5.0% AER</div>
+          </div>
+          <div class="holding-values">
+            <div class="holding-amount">£8,190</div>
+            <div class="holding-change">+£390</div>
+          </div>
+        </div>
+
+        <div class="holdings-divider"></div>
+
+        <div class="holdings-header">
+          <span class="holdings-title">Liabilities</span>
+          <span class="holdings-total">-£202,848</span>
+        </div>
+
+        <div class="holding-row">
+          <div class="holding-indicator mortgage"></div>
+          <div class="holding-details">
+            <div class="holding-name">Mortgage</div>
+            <div class="holding-meta">Nationwide · 4.2% fixed</div>
+          </div>
+          <div class="holding-values">
+            <div class="holding-amount negative">-£198,400</div>
+            <div class="holding-change negative">-£3,600 paid</div>
+          </div>
+        </div>
+
+        <div class="holding-row">
+          <div class="holding-indicator loan"></div>
+          <div class="holding-details">
+            <div class="holding-name">Car Finance</div>
+            <div class="holding-meta">PCP · 24mo left</div>
+          </div>
+          <div class="holding-values">
+            <div class="holding-amount negative">-£4,448</div>
+            <div class="holding-change negative">-£2,200 paid</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="topbar">
+        <div class="time-controls">
+          <button class="time-btn">1M</button>
+          <button class="time-btn">3M</button>
+          <button class="time-btn">6M</button>
+          <button class="time-btn active">1Y</button>
+          <button class="time-btn">5Y</button>
+          <button class="time-btn">All</button>
+        </div>
+
+        <div class="chart-options">
+          <div class="chart-toggle">
+            <button class="toggle-btn active">Net Worth</button>
+            <button class="toggle-btn">Breakdown</button>
+            <button class="toggle-btn">Stacked</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-area">
+        <div class="chart-legend">
+          <div class="legend-item">
+            <div class="legend-line networth"></div>
+            <span>Net Worth</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-line assets"></div>
+            <span>Assets</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-line liabilities"></div>
+            <span>Liabilities</span>
+          </div>
+        </div>
+
+        <div class="chart-wrapper">
+          <!-- Y-axis labels -->
+          <div class="y-axis">
+            <div class="y-label">£500k</div>
+            <div class="y-label">£350k</div>
+            <div class="y-label">£200k</div>
+            <div class="y-label zero">£0</div>
+            <div class="y-label">-£150k</div>
+            <div class="y-label">-£300k</div>
+          </div>
+
+          <svg class="chart-svg" viewBox="0 0 900 400" preserveAspectRatio="none">
+            <!-- Grid lines -->
+            <line class="grid-line" x1="80" y1="40" x2="880" y2="40"/>
+            <line class="grid-line" x1="80" y1="100" x2="880" y2="100"/>
+            <line class="grid-line" x1="80" y1="160" x2="880" y2="160"/>
+            <!-- Zero line - more prominent -->
+            <line class="zero-line" x1="80" y1="220" x2="880" y2="220"/>
+            <line class="grid-line" x1="80" y1="280" x2="880" y2="280"/>
+            <line class="grid-line" x1="80" y1="340" x2="880" y2="340"/>
+
+            <!-- Asset area fill (above zero) -->
+            <path class="chart-fill assets" d="
+              M 80 95
+              C 150 92, 200 88, 250 84
+              C 300 80, 350 76, 400 72
+              C 450 68, 500 65, 550 62
+              C 600 59, 650 56, 700 54
+              C 750 52, 800 50, 850 48
+              L 880 46
+              L 880 220
+              L 80 220
+              Z
+            "/>
+
+            <!-- Liability area fill (below zero) -->
+            <path class="chart-fill liabilities" d="
+              M 80 220
+              L 880 220
+              L 880 308
+              C 850 309, 800 310, 750 311
+              C 700 312, 650 313, 600 314
+              C 550 315, 500 316, 450 318
+              C 400 320, 350 322, 300 324
+              C 250 326, 200 328, 150 330
+              L 80 332
+              Z
+            "/>
+
+            <!-- Net worth area fill (between zero and the line) -->
+            <path class="chart-fill networth" d="
+              M 80 168
+              C 150 164, 200 158, 250 152
+              C 300 146, 350 140, 400 134
+              C 450 128, 500 124, 550 118
+              C 600 112, 650 108, 700 104
+              C 750 100, 800 96, 850 94
+              L 880 92
+              L 880 220
+              L 80 220
+              Z
+            "/>
+
+            <!-- Asset line (positive, top area) -->
+            <path class="chart-path assets" d="
+              M 80 95
+              C 150 92, 200 88, 250 84
+              C 300 80, 350 76, 400 72
+              C 450 68, 500 65, 550 62
+              C 600 59, 650 56, 700 54
+              C 750 52, 800 50, 850 48
+              L 880 46
+            "/>
+
+            <!-- Liability line (negative, bottom area) -->
+            <path class="chart-path liabilities" d="
+              M 80 332
+              C 150 330, 200 328, 250 326
+              C 300 324, 350 322, 400 320
+              C 450 318, 500 316, 550 315
+              C 600 314, 650 313, 700 312
+              C 750 311, 800 310, 850 309
+              L 880 308
+            "/>
+
+            <!-- Net Worth line (middle, the balance) -->
+            <path class="chart-path networth" d="
+              M 80 168
+              C 150 164, 200 158, 250 152
+              C 300 146, 350 140, 400 134
+              C 450 128, 500 124, 550 118
+              C 600 112, 650 108, 700 104
+              C 750 100, 800 96, 850 94
+              L 880 92
+            "/>
+
+            <!-- Milestones -->
+            <g class="milestone" transform="translate(250, 152)">
+              <circle class="milestone-dot" r="5"/>
+              <text class="milestone-label" y="-12">ISA opened</text>
+            </g>
+
+            <g class="milestone" transform="translate(550, 118)">
+              <circle class="milestone-dot" r="5"/>
+              <text class="milestone-label" y="-12">Pension increase</text>
+            </g>
+
+            <!-- Hover line (example position) -->
+            <line class="hover-line" x1="700" y1="40" x2="700" y2="360" opacity="0.5"/>
+
+            <!-- Current value dots -->
+            <circle cx="880" cy="46" r="4" fill="var(--asset-color)"/>
+            <circle cx="880" cy="308" r="4" fill="var(--liability-color)"/>
+            <circle cx="880" cy="92" r="6" fill="var(--networth-color)"/>
+          </svg>
+
+          <!-- Tooltip -->
+          <div class="chart-tooltip">
+            <div class="tooltip-date">October 2025</div>
+            <div class="tooltip-row">
+              <div class="tooltip-label">
+                <div class="tooltip-dot assets"></div>
+                Assets
+              </div>
+              <div class="tooltip-value">£472,100</div>
+            </div>
+            <div class="tooltip-row">
+              <div class="tooltip-label">
+                <div class="tooltip-dot liabilities"></div>
+                Liabilities
+              </div>
+              <div class="tooltip-value negative">-£205,200</div>
+            </div>
+            <div class="tooltip-divider"></div>
+            <div class="tooltip-row">
+              <div class="tooltip-label">
+                <div class="tooltip-dot networth"></div>
+                Net Worth
+              </div>
+              <div class="tooltip-value tooltip-net">£266,900</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- X-axis labels -->
+        <div class="x-axis">
+          <span class="x-label">Jan</span>
+          <span class="x-label">Feb</span>
+          <span class="x-label">Mar</span>
+          <span class="x-label">Apr</span>
+          <span class="x-label">May</span>
+          <span class="x-label">Jun</span>
+          <span class="x-label">Jul</span>
+          <span class="x-label">Aug</span>
+          <span class="x-label">Sep</span>
+          <span class="x-label">Oct</span>
+          <span class="x-label">Nov</span>
+          <span class="x-label">Dec</span>
+        </div>
+
+        <!-- Bottom Stats -->
+        <div class="bottom-stats">
+          <div class="bottom-stat">
+            <div class="bottom-stat-label">All-Time High</div>
+            <div class="bottom-stat-value">£284,392</div>
+            <div class="bottom-stat-sub">Today</div>
+          </div>
+          <div class="bottom-stat">
+            <div class="bottom-stat-label">1Y Return</div>
+            <div class="bottom-stat-value">+8.6%</div>
+            <div class="bottom-stat-sub">vs <span>+5.2%</span> FTSE</div>
+          </div>
+          <div class="bottom-stat">
+            <div class="bottom-stat-label">Savings Rate</div>
+            <div class="bottom-stat-value">24%</div>
+            <div class="bottom-stat-sub">£1,440/mo avg</div>
+          </div>
+          <div class="bottom-stat">
+            <div class="bottom-stat-label">Debt Paydown</div>
+            <div class="bottom-stat-value">£5,800</div>
+            <div class="bottom-stat-sub">This year</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
