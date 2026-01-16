@@ -1,0 +1,123 @@
+---
+const navItems = [
+  { label: 'GitHub', href: 'https://github.com/jamespatrickgill/tally', external: true },
+];
+---
+
+<header class="header">
+  <div class="header-content">
+    <a href="/tally/" class="logo">
+      <svg class="logo-icon" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="headerGreenFill" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" style="stop-color:#22c55e;stop-opacity:0"/>
+            <stop offset="100%" style="stop-color:#22c55e;stop-opacity:0.35"/>
+          </linearGradient>
+        </defs>
+        <rect x="16" y="16" width="480" height="480" rx="96" fill="#1c1c21"/>
+        <g opacity="0.08" stroke="#fff" stroke-width="1">
+          <line x1="80" y1="150" x2="432" y2="150"/>
+          <line x1="80" y1="220" x2="432" y2="220"/>
+          <line x1="80" y1="290" x2="432" y2="290"/>
+          <line x1="80" y1="360" x2="432" y2="360"/>
+        </g>
+        <path d="M80 290 L80 280 Q180 245 256 210 Q340 170 432 155 L432 290 Z" fill="url(#headerGreenFill)"/>
+        <path d="M80 200 Q180 170 256 145 Q340 115 432 105" stroke="#3b82f6" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <path d="M80 280 Q180 245 256 210 Q340 170 432 155" stroke="#22c55e" stroke-width="14" stroke-linecap="round" fill="none"/>
+        <path d="M80 320 Q180 350 256 370 Q340 390 432 400" stroke="#f97316" stroke-width="11" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span class="logo-text">Tally</span>
+    </a>
+
+    <nav class="nav">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class="nav-link"
+          target={item.external ? '_blank' : undefined}
+          rel={item.external ? 'noopener noreferrer' : undefined}
+        >
+          {item.label}
+          {item.external && (
+            <svg class="external-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M10 2h4v4m0-4L8 8m-2-4H4a2 2 0 00-2 2v6a2 2 0 002 2h6a2 2 0 002-2V8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          )}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: rgba(28, 28, 33, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+  }
+
+  .logo-text {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: color 0.15s;
+  }
+
+  .nav-link:hover {
+    color: var(--text-primary);
+  }
+
+  .external-icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 640px) {
+    .nav {
+      gap: 20px;
+    }
+  }
+</style>

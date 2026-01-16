@@ -1,0 +1,115 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-content">
+    <a href="/tally/" class="footer-logo">
+      <svg class="footer-icon" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="footerGreenFill" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" style="stop-color:#22c55e;stop-opacity:0"/>
+            <stop offset="100%" style="stop-color:#22c55e;stop-opacity:0.35"/>
+          </linearGradient>
+        </defs>
+        <rect x="16" y="16" width="480" height="480" rx="96" fill="#1c1c21"/>
+        <g opacity="0.08" stroke="#fff" stroke-width="1">
+          <line x1="80" y1="150" x2="432" y2="150"/>
+          <line x1="80" y1="220" x2="432" y2="220"/>
+          <line x1="80" y1="290" x2="432" y2="290"/>
+          <line x1="80" y1="360" x2="432" y2="360"/>
+        </g>
+        <path d="M80 290 L80 280 Q180 245 256 210 Q340 170 432 155 L432 290 Z" fill="url(#footerGreenFill)"/>
+        <path d="M80 200 Q180 170 256 145 Q340 115 432 105" stroke="#3b82f6" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <path d="M80 280 Q180 245 256 210 Q340 170 432 155" stroke="#22c55e" stroke-width="14" stroke-linecap="round" fill="none"/>
+        <path d="M80 320 Q180 350 256 370 Q340 390 432 400" stroke="#f97316" stroke-width="11" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span>Tally</span>
+    </a>
+
+    <div class="footer-links">
+      <a href="https://github.com/jamespatrickgill/tally" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://github.com/jamespatrickgill/tally/releases" target="_blank" rel="noopener noreferrer">Releases</a>
+      <a href="https://github.com/jamespatrickgill/tally/issues" target="_blank" rel="noopener noreferrer">Issues</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; {currentYear} Tally. MIT License.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: 40px 24px 24px;
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  .footer-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: color 0.15s;
+  }
+
+  .footer-logo:hover {
+    color: var(--text-primary);
+  }
+
+  .footer-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    color: var(--text-tertiary);
+    font-size: 14px;
+    transition: color 0.15s;
+  }
+
+  .footer-links a:hover {
+    color: var(--text-primary);
+  }
+
+  .footer-bottom {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  .footer-bottom p {
+    color: var(--text-tertiary);
+    font-size: 12px;
+    text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    .footer-content {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .footer-links {
+      gap: 16px;
+    }
+  }
+</style>

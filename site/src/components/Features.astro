@@ -1,0 +1,367 @@
+---
+---
+
+<section id="features" class="features">
+  <div class="feature-row">
+    <div class="feature-text">
+      <h2>Your data stays yours</h2>
+      <p>Everything lives in a local SQLite database on your machine. Do what you want with it.</p>  
+    </div>
+    <div class="feature-visual visual-local">
+      <div class="file-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/>
+        </svg>
+      </div>
+      <div class="file-info">
+        <span class="file-name">tally.db</span>
+        <span class="file-path">~/Library/Application Support/</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <h2>Get in. Get out.</h2>
+      <p>Optimised for minimal interaction. Open tally, update balances, move on.</p>
+    </div>
+    <div class="feature-visual visual-time">
+      <div class="time-block">
+        <span class="time-value">~5</span>
+        <span class="time-unit">min/month</span>
+      </div>
+      <div class="time-comparison">
+        <div class="comparison-item yours">
+          <span class="dot green"></span>
+          <span>Update balances</span>
+        </div>
+        <div class="comparison-item crossed">
+          <span class="dot red"></span>
+          <span>Categorize transactions</span>
+        </div>
+        <div class="comparison-item crossed">
+          <span class="dot red"></span>
+          <span>Link bank accounts</span>
+        </div>
+        <div class="comparison-item crossed">
+          <span class="dot red"></span>
+          <span>Review budgets</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-row">
+    <div class="feature-text">
+      <h2>Check yourself it's open source.</h2>
+    <p>Don't trust us if you don't want to. Look at the code and see, everything is open.</p>
+    </div>
+    <div class="feature-visual visual-code">
+      <div class="code-header">
+        <span class="code-file">db.ts</span>
+        <span class="code-comment">// The entire data layer</span>
+      </div>
+      <pre class="code-block"><code><span class="code-keyword">import</span> Database <span class="code-keyword">from</span> <span class="code-string">'@tauri-apps/plugin-sql'</span>;
+
+<span class="code-keyword">export async function</span> <span class="code-fn">getDb</span>() {'{'}
+  <span class="code-keyword">return</span> Database.<span class="code-fn">load</span>(<span class="code-string">'sqlite:tally.db'</span>);
+{'}'}
+
+<span class="code-comment">// No fetch(). No tracking. Just SQL.</span></code></pre>
+      <a href="https://github.com/jamespatrickgill/tally" class="code-link" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+        View source
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .features {
+    padding: 40px 0;
+  }
+
+  .feature-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 48px;
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .feature-row:last-child {
+    border-bottom: none;
+  }
+
+  .feature-row.reverse {
+    direction: rtl;
+  }
+
+  .feature-row.reverse > * {
+    direction: ltr;
+  }
+
+  .feature-text h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .feature-text p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .feature-visual {
+    background: var(--bg-secondary);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 32px;
+  }
+
+  /* Local-first visual */
+  .visual-local {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .file-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .file-icon svg {
+    width: 28px;
+    height: 28px;
+    color: var(--accent-green);
+  }
+
+  .file-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .file-name {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .file-path {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+  }
+
+  /* Time visual */
+  .visual-time {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .time-block {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .time-value {
+    font-family: var(--font-mono);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent-green-light);
+    letter-spacing: -0.03em;
+  }
+
+  .time-unit {
+    font-size: 1rem;
+    color: var(--text-tertiary);
+  }
+
+  .time-comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .comparison-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+  }
+
+  .comparison-item.crossed {
+    color: var(--text-tertiary);
+    text-decoration: line-through;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .dot.green { background: var(--accent-green); }
+  .dot.red { background: var(--accent-red); opacity: 0.5; }
+
+  /* Accounts visual */
+  .account-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .account {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+  }
+
+  .account-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .account-name {
+    flex: 1;
+    font-size: 0.95rem;
+  }
+
+  .account-value {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--accent-blue);
+  }
+
+  .account.liability .account-value {
+    color: var(--accent-orange);
+  }
+
+  /* Code visual */
+  .visual-code {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .code-file {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .code-header .code-comment {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  .code-block {
+    padding: 20px;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    background: var(--bg-secondary);
+    overflow-x: auto;
+  }
+
+  .code-block code {
+    color: var(--text-secondary);
+  }
+
+  .code-keyword {
+    color: var(--accent-purple);
+  }
+
+  .code-string {
+    color: var(--accent-green-light);
+  }
+
+  .code-comment {
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  .code-fn {
+    color: var(--accent-blue);
+  }
+
+  .code-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
+    background: var(--bg-tertiary);
+    border-top: 1px solid var(--line-subtle);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+
+  .code-link:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+  }
+
+  .code-link svg {
+    opacity: 0.7;
+  }
+
+  @media (max-width: 900px) {
+    .feature-row {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding: 60px 24px;
+    }
+
+    .feature-row.reverse {
+      direction: ltr;
+    }
+
+    .feature-text {
+      text-align: center;
+    }
+
+    .feature-text h2 {
+      font-size: 1.5rem;
+    }
+  }
+</style>
